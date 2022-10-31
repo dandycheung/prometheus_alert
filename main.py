@@ -394,7 +394,7 @@ def webhook():
             prometheus_monitor_info=prometheus_data
         )
         filename = os.path.join('templates', "{}.html".format(int(time.time())))
-        full_url = os.path.join("http://10.200.34.5", filename)
+        full_url = os.path.join("http://10.200.34.5:5000", filename)
         write_html_file(filename=filename, content=html_template_content)
         # 获取收件人邮件列表
         email_list = get_email_conf('email.yaml', email_name=team_name, action=0)
