@@ -1,0 +1,5 @@
+.gitignore
+venv
+.idea
+secret.yaml
+settings.py
