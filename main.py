@@ -376,7 +376,7 @@ def webhook():
                         items['endsAt'] = time_zone_conversion(items['endsAt'])
         # team_name = prometheus_data["commonLabels"]["team"]
         team_name = "wechat_webhook"
-        generate_html_template_subj = ParseingTemplate('email_template_firing.html')
+        generate_html_template_subj = ParseingTemplate('html_template_firing.html')
         html_template_content = generate_html_template_subj.template(
             prometheus_monitor_info=prometheus_data
         )
