@@ -1,6 +1,6 @@
-import os, json, datetime, yaml
+import os, json, datetime, yaml, time
 # from lib.Log import logger
-from flask import Flask, request
+from flask import Flask, request, redirect
 from gevent.pywsgi import WSGIServer
 from jinja2 import Environment, FileSystemLoader
 from dateutil import parser
@@ -328,6 +328,19 @@ class ParseingTemplate:
             raise error
 
 
+def write_html_file(filename, content):
+    """
+    :param filename:
+    :param content:
+    :return:
+    """
+    try:
+        with open(filename, '+w') as fff:
+            fff.write(content)
+    except Exception as error:
+        print("写入文件失败：{},原因:".format(filename, error))
+
+
 def get_email_conf(file, email_name=None, action=0):
     """
     :param file: yaml格式的文件类型
@@ -380,12 +393,20 @@ def webhook():
         html_template_content = generate_html_template_subj.template(
             prometheus_monitor_info=prometheus_data
         )
+        filename = os.path.join('templates', "{}.html".format(int(time.time())))
+        full_url = os.path.join("http://10.200.34.5", filename)
+        write_html_file(filename=filename, content=html_template_content)
         # 获取收件人邮件列表
         email_list = get_email_conf('email.yaml', email_name=team_name, action=0)
-        n.sender(title="新TSP生产环境告警", msg=html_template_content, is_all=True, mentioned=[])
+        n.sender(title="新TSP生产环境告警", msg=full_url, is_all=True, mentioned=[])
         return "prometheus monitor"
     except Exception as e:
         raise e
+
+
+@app.route("/show/<pages>")
+def direct_show(pages):
+    return redirect("/templates/{}.html".format(pages))
 
 
 if __name__ == '__main__':
