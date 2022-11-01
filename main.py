@@ -467,7 +467,7 @@ def webhook():
         html_template_content = generate_html_template_subj.template(
             prometheus_monitor_info=prometheus_data
         )
-        filename = os.path.join('templates', "{}.html".format(int(time.time())))
+        filename = os.path.join('show', "{}.html".format(int(time.time())))
         full_url = os.path.join(HOST, filename)
         write_html_file(filename=filename, content=html_template_content)
         # 获取收件人邮件列表
