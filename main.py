@@ -240,8 +240,7 @@ class NoticeSender:
                     {
                         "keyname": "告警内容3",
                         "value": "提示3",
-                        "type": 2,
-                        "media_id": "MEDIAID"
+                        "type": 1
                     }
                 ],
                 "jump_list": [
