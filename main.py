@@ -1,6 +1,6 @@
 import os, json, datetime, yaml, time
 # from lib.Log import logger
-from flask import Flask, request, redirect
+from flask import Flask, request, render_template
 from gevent.pywsgi import WSGIServer
 from jinja2 import Environment, FileSystemLoader
 from dateutil import parser
@@ -480,7 +480,7 @@ def webhook():
 
 @app.route("/show/<pages>")
 def direct_show(pages):
-    return redirect("/templates/{}.html".format(pages))
+    return render_template("{}.html".format(pages))
 
 
 if __name__ == '__main__':
