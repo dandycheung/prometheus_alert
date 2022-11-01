@@ -215,8 +215,6 @@ class NoticeSender:
                 "quote_area": {
                     "type": 1,
                     "url": "https://work.weixin.qq.com/?from=openApi",
-                    "appid": "APPID",
-                    "pagepath": "PAGEPATH",
                     "title": "引用文本标题",
                     "quote_text": "Jack：告警~\nBalian：消息内容！"
                 },
@@ -237,11 +235,6 @@ class NoticeSender:
                         "type": 1,
                         "url": "https://work.weixin.qq.com/?from=openApi"
                     },
-                    {
-                        "keyname": "告警内容3",
-                        "value": "提示3",
-                        "type": 1
-                    }
                 ],
                 "jump_list": [
                     {
