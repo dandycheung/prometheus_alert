@@ -471,7 +471,7 @@ def webhook():
         full_url = os.path.join(HOST, filename)
         write_html_file(filename=filename, content=html_template_content)
         # 获取收件人邮件列表
-        email_list = get_email_conf('email.yaml', email_name=team_name, action=0)
+        #email_list = get_email_conf('email.yaml', email_name=team_name, action=0)
         n.sender(title="新TSP生产环境告警", msg=full_url, is_all=True, mentioned=[])
         return "prometheus monitor"
     except Exception as e:
