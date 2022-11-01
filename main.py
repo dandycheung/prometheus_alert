@@ -260,6 +260,10 @@ class NoticeSender:
                     }
 
                 ],
+                "card_action": {
+                    "type": 1,
+                    "url": "https://grafana.newtsp.newcowin.com"
+                }
             }
         }
         res = self._req.request(
