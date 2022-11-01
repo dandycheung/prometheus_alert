@@ -409,7 +409,7 @@ def write_html_file(filename, content):
     :return:
     """
     try:
-        with open(filename, '+w') as fff:
+        with open(filename, 'w', encoding='utf-8') as fff:
             fff.write(content)
     except Exception as error:
         print("写入文件失败：{},原因:".format(filename, error))
