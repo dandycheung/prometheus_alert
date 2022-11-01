@@ -1,0 +1,15 @@
+send:
+  smtp_host: smtp.163.com
+  send_user: warnnings@163.com
+  send_addr: warnnings@163.com
+  send_pass: BRMUMMNCZRZPUZEK
+email:
+  - name: wechat-webhook
+    receive_addr:
+      - 邮件地址1
+      - 邮件地址2
+      - 邮件地址3
+  - name: ops
+    receive_addr:
+      - 邮件地址1
+      - 邮件地址2
