@@ -188,6 +188,80 @@ class NoticeSender:
                 "mentioned_mobile_list": mentioned
             }
         }
+        data = {
+            "msgtype": "template_card",
+            "template_card": {
+                "card_type": "news_notice",
+                "source": {
+                    "icon_url": "https://wework.qpic.cn/wwpic/252813_jOfDHtcISzuodLa_1629280209/0",
+                    "desc": "监控告警",
+                    "desc_color": 0
+                },
+                "main_title": {
+                    "title": "正在使用新TSP监控告警",
+                    "desc": "正在使用新TSP监控告警"
+                },
+                "card_image": {
+                    "url": "https://wework.qpic.cn/wwpic/354393_4zpkKXd7SrGMvfg_1629280616/0",
+                    "aspect_ratio": 2.25
+                },
+                "image_text_area": {
+                    "type": 1,
+                    "url": "https://work.weixin.qq.com",
+                    "title": "正在使用新TSP监控告警",
+                    "desc": "正在使用新TSP监控告警",
+                    "image_url": "https://wework.qpic.cn/wwpic/354393_4zpkKXd7SrGMvfg_1629280616/0"
+                },
+                "quote_area": {
+                    "type": 1,
+                    "url": "https://work.weixin.qq.com/?from=openApi",
+                    "appid": "APPID",
+                    "pagepath": "PAGEPATH",
+                    "title": "引用文本标题",
+                    "quote_text": "Jack：告警~\nBalian：消息内容！"
+                },
+                "vertical_content_list": [
+                    {
+                        "title": "消息内容",
+                        "desc": "告警！"
+                    }
+                ],
+                "horizontal_content_list": [
+                    {
+                        "keyname": "告警内容1",
+                        "value": "提示1"
+                    },
+                    {
+                        "keyname": "告警内容2",
+                        "value": "提示2",
+                        "type": 1,
+                        "url": "https://work.weixin.qq.com/?from=openApi"
+                    },
+                    {
+                        "keyname": "告警内容3",
+                        "value": "提示3",
+                        "type": 2,
+                        "media_id": "MEDIAID"
+                    }
+                ],
+                "jump_list": [
+                    {
+                        "type": 1,
+                        "url": "https://grafana.newtsp.newcowin.com",
+                        "title": "grafana地址"
+                    }, {
+                        "type": 1,
+                        "url": "https://prometheus.newtsp.newcowin.com",
+                        "title": "prometheus地址"
+                    }, {
+                        "type": 1,
+                        "url": "https://prometheus.newtsp.newcowin.com",
+                        "title": "告警内容展示地址"
+                    }
+
+                ],
+            }
+        }
         res = self._req.request(
             url=_url, params=params, data=json.dumps(data, ensure_ascii=False), headers=headers, method='POST'
         )
