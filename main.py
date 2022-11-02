@@ -446,7 +446,7 @@ def webhook():
             prometheus_monitor_info=prometheus_data
         )
         filename = os.path.join('templates', "{}.html".format(int(time.time())))
-        url = os.path.join('show', "{}.html".format(int(time.time())))
+        url = os.path.join('show', "{}".format(int(time.time())))
         full_url = os.path.join(HOST, url)
         write_html_file(filename=filename, content=html_template_content)
         data = {
