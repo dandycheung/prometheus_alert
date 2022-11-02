@@ -555,8 +555,9 @@ def webhook():
 
 @app.route("/show/<pages>")
 def direct_show(pages):
-    if len(pages.split('.')) > 1:
-        return "请求地址应该为：{}/{}".format(HOST, pages)
+    pages_params = pages.split('.')
+    if len(pages_params) > 1:
+        return "请求地址应该为：{}/{}".format(HOST, pages_params[0])
     else:
         if not os.path.exists(os.path.join('templates', pages)):
             return "请求内容不存在，请检查！"
