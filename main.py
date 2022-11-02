@@ -558,7 +558,8 @@ def direct_show(pages):
     else:
         if not os.path.exists(os.path.join('templates', pages)):
             return "请求内容不存在，请检查！"
-        return render_template("{}.html".format(pages))
+        else:
+            return render_template("{}.html".format(pages))
 
 
 if __name__ == '__main__':
