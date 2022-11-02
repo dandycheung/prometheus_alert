@@ -560,7 +560,7 @@ def direct_show(pages):
         return "请求地址应该为：{}/{}".format(HOST, pages_params[0])
     else:
         if not os.path.exists(os.path.join('templates', pages)):
-            return "请求内容不存在，请检查！"
+            return "请求内容不存在，或者记录已超时删除，请检查！"
         else:
             return render_template("{}.html".format(pages))
 
