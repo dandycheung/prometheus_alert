@@ -432,6 +432,8 @@ def count_alert(message, status="firing"):
     :return:
     """
     result = 0
+    if 'alerts' not in message:
+        return result
     for items in message['alerts']:
         if items['status'] == status:
             result += 1
