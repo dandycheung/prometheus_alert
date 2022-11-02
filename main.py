@@ -503,7 +503,7 @@ def webhook():
                         "title": "prometheus地址"
                     }, {
                         "type": 1,
-                        "url": "https://prometheus.newtsp.newcowin.com",
+                        "url": full_url,
                         "title": "告警内容展示地址"
                     }
 
