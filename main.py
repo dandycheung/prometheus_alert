@@ -162,104 +162,88 @@ class NoticeSender:
             print("请求成功：{}".format(result['errmsg']))
             return True
 
-    def wechat_sender(self, title, msg, settings: dict, mentioned, is_all=True):
+    def wechat_sender(self, msg, settings: dict):
         """
-        :param title:
         :param msg:
         :param settings:
-        :param mentioned:
-        :param is_all:
         :return:
         """
 
         _url = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send"
         params = {'key': settings['token'], 'debug': 1}
         headers = {'Content-Type': 'application/json'}
-        if is_all:
-            mentioned = ["@all"]
-        elif mentioned and not is_all:
-            mentioned = mentioned
-        else:
-            mentioned = []
-        data = {
-            "msgtype": "markdown",
-            "markdown": {
-                "content": """## {}\n\n {}""".format(title, msg),
-                "mentioned_mobile_list": mentioned
-            }
-        }
-        data = {
-            "msgtype": "template_card",
-            "template_card": {
-                "card_type": "news_notice",
-                "source": {
-                    "icon_url": "https://wework.qpic.cn/wwpic/252813_jOfDHtcISzuodLa_1629280209/0",
-                    "desc": "监控告警",
-                    "desc_color": 0
-                },
-                "main_title": {
-                    "title": "正在使用新TSP监控告警",
-                    "desc": "正在使用新TSP监控告警"
-                },
-                "card_image": {
-                    "url": "https://wework.qpic.cn/wwpic/354393_4zpkKXd7SrGMvfg_1629280616/0",
-                    "aspect_ratio": 2.25
-                },
-                "image_text_area": {
-                    "type": 1,
-                    "url": "https://work.weixin.qq.com",
-                    "title": "正在使用新TSP监控告警",
-                    "desc": "正在使用新TSP监控告警",
-                    "image_url": "https://wework.qpic.cn/wwpic/354393_4zpkKXd7SrGMvfg_1629280616/0"
-                },
-                "quote_area": {
-                    "type": 1,
-                    "url": "https://work.weixin.qq.com/?from=openApi",
-                    "title": "引用文本标题",
-                    "quote_text": "Jack：告警~\nBalian：消息内容！"
-                },
-                "vertical_content_list": [
-                    {
-                        "title": "消息内容",
-                        "desc": "告警！"
-                    }
-                ],
-                "horizontal_content_list": [
-                    {
-                        "keyname": "告警内容1",
-                        "value": "提示1"
-                    },
-                    {
-                        "keyname": "告警内容2",
-                        "value": "提示2",
-                        "type": 1,
-                        "url": "https://work.weixin.qq.com/?from=openApi"
-                    },
-                ],
-                "jump_list": [
-                    {
-                        "type": 1,
-                        "url": "https://grafana.newtsp.newcowin.com",
-                        "title": "grafana地址"
-                    }, {
-                        "type": 1,
-                        "url": "https://prometheus.newtsp.newcowin.com",
-                        "title": "prometheus地址"
-                    }, {
-                        "type": 1,
-                        "url": "https://prometheus.newtsp.newcowin.com",
-                        "title": "告警内容展示地址"
-                    }
-
-                ],
-                "card_action": {
-                    "type": 1,
-                    "url": "https://grafana.newtsp.newcowin.com"
-                }
-            }
-        }
+        # data = {
+        #     "msgtype": "template_card",
+        #     "template_card": {
+        #         "card_type": "news_notice",
+        #         "source": {
+        #             "icon_url": "https://wework.qpic.cn/wwpic/252813_jOfDHtcISzuodLa_1629280209/0",
+        #             "desc": "监控告警",
+        #             "desc_color": 0
+        #         },
+        #         "main_title": {
+        #             "title": "正在使用新TSP监控告警",
+        #             "desc": "正在使用新TSP监控告警"
+        #         },
+        #         "card_image": {
+        #             "url": "https://wework.qpic.cn/wwpic/354393_4zpkKXd7SrGMvfg_1629280616/0",
+        #             "aspect_ratio": 2.25
+        #         },
+        #         "image_text_area": {
+        #             "type": 1,
+        #             "url": "https://work.weixin.qq.com",
+        #             "title": "正在使用新TSP监控告警",
+        #             "desc": "正在使用新TSP监控告警",
+        #             "image_url": "https://wework.qpic.cn/wwpic/354393_4zpkKXd7SrGMvfg_1629280616/0"
+        #         },
+        #         "quote_area": {
+        #             "type": 1,
+        #             "url": "https://work.weixin.qq.com/?from=openApi",
+        #             "title": "引用文本标题",
+        #             "quote_text": "Jack：告警~\nBalian：消息内容！"
+        #         },
+        #         "vertical_content_list": [
+        #             {
+        #                 "title": "消息内容",
+        #                 "desc": "告警！"
+        #             }
+        #         ],
+        #         "horizontal_content_list": [
+        #             {
+        #                 "keyname": "告警内容1",
+        #                 "value": "提示1"
+        #             },
+        #             {
+        #                 "keyname": "告警内容2",
+        #                 "value": "提示2",
+        #                 "type": 1,
+        #                 "url": "https://work.weixin.qq.com/?from=openApi"
+        #             },
+        #         ],
+        #         "jump_list": [
+        #             {
+        #                 "type": 1,
+        #                 "url": "https://grafana.newtsp.newcowin.com",
+        #                 "title": "grafana地址"
+        #             }, {
+        #                 "type": 1,
+        #                 "url": "https://prometheus.newtsp.newcowin.com",
+        #                 "title": "prometheus地址"
+        #             }, {
+        #                 "type": 1,
+        #                 "url": "https://prometheus.newtsp.newcowin.com",
+        #                 "title": "告警内容展示地址"
+        #             }
+        #
+        #         ],
+        #         "card_action": {
+        #             "type": 1,
+        #             "url": "https://grafana.newtsp.newcowin.com"
+        #         }
+        #     }
+        # }
         res = self._req.request(
-            url=_url, params=params, data=json.dumps(data, ensure_ascii=False), headers=headers, method='POST'
+            url=_url, params=params, data=json.dumps(msg, ensure_ascii=False), headers=headers, method='POST'
         )
         result = json.loads(res.read().decode("UTF-8"))
         if result['errcode'] != 0:
@@ -371,7 +355,7 @@ class NoticeSender:
         self._get_sender_config()
         for setting in self._sender_config:
             with ThreadPoolExecutor(max_workers=3) as worker:
-                args = (title, msg, setting, mentioned, is_all)
+                args = (msg, setting)
                 if setting['msg_type'] == 'WECHAT_ROBOT':
                     res = worker.submit(self.wechat_file_sender, *args[1:])
                 elif setting['msg_type'] == 'DINGTALK_ROBOT':
@@ -467,9 +451,72 @@ def webhook():
         url = os.path.join('show', "{}.html".format(int(time.time())))
         full_url = os.path.join(HOST, url)
         write_html_file(filename=filename, content=html_template_content)
+        data = {
+            "msgtype": "template_card",
+            "template_card": {
+                "card_type": "news_notice",
+                "source": {
+                    "icon_url": "https://www.kaiyihome.com/favicon.ico",
+                    "desc": "监控告警",
+                    "desc_color": 0
+                },
+                "main_title": {
+                    "title": "正在使用新TSP监控告警",
+                    "desc": "正在使用新TSP监控告警"
+                },
+                "card_image": {
+                    "url": "https://prometheus.io/assets/prometheus_logo_grey.svg",
+                    "aspect_ratio": 2.25
+                },
+                "quote_area": {
+                    "type": 1,
+                    "url": "https://work.weixin.qq.com/?from=openApi",
+                    "title": "引用文本标题",
+                    "quote_text": "Jack：告警~\nBalian：消息内容！"
+                },
+                "vertical_content_list": [
+                    {
+                        "title": "消息内容",
+                        "desc": "告警！"
+                    }
+                ],
+                "horizontal_content_list": [
+                    {
+                        "keyname": "告警内容1",
+                        "value": "提示1"
+                    },
+                    {
+                        "keyname": "告警内容2",
+                        "value": "提示2",
+                        "type": 1,
+                        "url": "https://work.weixin.qq.com/?from=openApi"
+                    },
+                ],
+                "jump_list": [
+                    {
+                        "type": 1,
+                        "url": "https://grafana.newtsp.newcowin.com",
+                        "title": "grafana地址"
+                    }, {
+                        "type": 1,
+                        "url": "https://prometheus.newtsp.newcowin.com",
+                        "title": "prometheus地址"
+                    }, {
+                        "type": 1,
+                        "url": "https://prometheus.newtsp.newcowin.com",
+                        "title": "告警内容展示地址"
+                    }
+
+                ],
+                "card_action": {
+                    "type": 1,
+                    "url": "https://grafana.newtsp.newcowin.com"
+                }
+            }
+        }
         # 获取收件人邮件列表
-        #email_list = get_email_conf('email.yaml', email_name=team_name, action=0)
-        n.sender(title="新TSP生产环境告警", msg=full_url, is_all=True, mentioned=[])
+        # email_list = get_email_conf('email.yaml', email_name=team_name, action=0)
+        n.sender(title="新TSP生产环境告警", msg=data)
         return "prometheus monitor"
     except Exception as e:
         raise e
