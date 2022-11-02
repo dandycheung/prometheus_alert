@@ -459,7 +459,7 @@ def format_message(message, full_url):
             "card_type": "news_notice",
             "source": {
                 "icon_url": "https://www.kaiyihome.com/favicon.ico",
-                "desc": "监控告警",
+                "desc": "Prometheus-监控告警",
                 "desc_color": 0
             },
             "main_title": {
