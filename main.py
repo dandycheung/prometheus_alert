@@ -463,8 +463,8 @@ def format_message(message, full_url):
                 "desc_color": 0
             },
             "main_title": {
-                "title": "正在使用新TSP监控告警",
-                "desc": "正在使用新TSP监控告警"
+                "title": "正在使用新TSP监控告警通知",
+                "desc": "智能软件部-运维组维护"
             },
             "card_image": {
                 "url": "https://grafana.com/api/dashboards/6417/logos/large",
