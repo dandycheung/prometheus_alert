@@ -514,6 +514,7 @@ def format_message(message, full_url):
             }
         }
     }
+    return data
 
 
 @app.route('/webhook', methods=['POST'])
@@ -540,6 +541,7 @@ def webhook():
         url = os.path.join('show', "{}".format(int(time.time())))
         full_url = os.path.join(HOST, url)
         write_html_file(filename=filename, content=html_template_content)
+        data = format_message(message=prometheus_data, full_url=full_url)
 
         # 获取收件人邮件列表
         # email_list = get_email_conf('email.yaml', email_name=team_name, action=0)
@@ -551,7 +553,12 @@ def webhook():
 
 @app.route("/show/<pages>")
 def direct_show(pages):
-    return render_template("{}.html".format(pages))
+    if len(pages.split('.')) > 1:
+        return "请求地址应该为：{}/{}".format(HOST, pages)
+    else:
+        if not os.path.exists(os.path.join('templates', pages)):
+            return "请求内容不存在，请检查！"
+        return render_template("{}.html".format(pages))
 
 
 if __name__ == '__main__':
