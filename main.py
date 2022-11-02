@@ -329,7 +329,7 @@ class NoticeSender:
         self._get_sender_config()
         for setting in self._sender_config:
             with ThreadPoolExecutor(max_workers=3) as worker:
-                args = (title, msg, setting, mentioned, is_all)
+                args = (msg, setting)
                 if setting['msg_type'] == 'WECHAT_ROBOT':
                     res = worker.submit(self.wechat_sender, *args)
                 elif setting['msg_type'] == 'DINGTALK_ROBOT':
