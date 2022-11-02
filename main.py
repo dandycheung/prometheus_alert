@@ -470,30 +470,12 @@ def format_message(message, full_url):
                 "url": "https://grafana.com/api/dashboards/6417/logos/large",
                 "aspect_ratio": 2.25
             },
-            # "quote_area": {
-            #     "type": 1,
-            #     "url": "https://grafana.newtsp.newcowin.com",
-            #     "title": "监控告警内容",
-            #     "quote_text": "Jack：告警~\nBalian：消息内容！"
-            # },
             "vertical_content_list": [
                 {
                     "title": "告警统计",
                     "desc": msg
                 }
             ],
-            # "horizontal_content_list": [
-            #     {
-            #         "keyname": "告警内容1",
-            #         "value": "提示1"
-            #     },
-            #     {
-            #         "keyname": "告警内容2",
-            #         "value": "提示2",
-            #         "type": 1,
-            #         "url": "https://work.weixin.qq.com/?from=openApi"
-            #     },
-            # ],
             "jump_list": [
                 {
                     "type": 1,
