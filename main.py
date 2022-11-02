@@ -521,16 +521,14 @@ def webhook():
         html_template_content = generate_html_template_subj.template(
             prometheus_monitor_info=prometheus_data
         )
+        print("当前消息内容：{}".format(prometheus_data))
         filename = os.path.join('templates', "{}.html".format(int(time.time())))
         url = os.path.join('show', "{}".format(int(time.time())))
         full_url = os.path.join(HOST, url)
         write_html_file(filename=filename, content=html_template_content)
         data = format_message(message=prometheus_data, full_url=full_url)
-
-        # 获取收件人邮件列表
-        # email_list = get_email_conf('email.yaml', email_name=team_name, action=0)
         n.sender(title="新TSP生产环境告警", msg=data)
-        return "prometheus monitor"
+        return prometheus_data
     except Exception as e:
         raise e
 
