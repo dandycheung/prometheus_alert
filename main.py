@@ -319,12 +319,10 @@ class NoticeSender:
     def dingtalk_file_sender(self):
         pass
 
-    def sender(self, title, msg, mentioned, is_all=False):
+    def sender(self, title, msg):
         """
         :param title:
         :param msg:
-        :param mentioned:
-        :param is_all:
         :return:
         """
         thead_list = list()
