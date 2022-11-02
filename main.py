@@ -425,6 +425,97 @@ def get_email_conf(file, email_name=None, action=0):
         raise e
 
 
+def count_alert(message, status="firing"):
+    """
+    :param message:
+    :param status:
+    :return:
+    """
+    result = 0
+    for items in message['alerts']:
+        if items['status'] == status:
+            result += 1
+    return result
+
+
+def format_message(message, full_url):
+    """
+    :param message:
+    :param full_url:
+    :return:
+    """
+    alert = count_alert(message=message)
+    resolved = count_alert(message=message, status='resolved')
+    if alert > 0:
+        msg = "正在告警中：存在告警{}条，恢复正常{}条,请根据情况查看监控！".format(alert, resolved)
+    else:
+        msg = "告警已恢复：存在告警{}条，恢复正常{}条,请根据情况查看监控！".format(alert, resolved)
+
+    data = {
+        "msgtype": "template_card",
+        "template_card": {
+            "card_type": "news_notice",
+            "source": {
+                "icon_url": "https://www.kaiyihome.com/favicon.ico",
+                "desc": "监控告警",
+                "desc_color": 0
+            },
+            "main_title": {
+                "title": "正在使用新TSP监控告警",
+                "desc": "正在使用新TSP监控告警"
+            },
+            "card_image": {
+                "url": "https://grafana.com/api/dashboards/6417/logos/large",
+                "aspect_ratio": 2.25
+            },
+            # "quote_area": {
+            #     "type": 1,
+            #     "url": "https://grafana.newtsp.newcowin.com",
+            #     "title": "监控告警内容",
+            #     "quote_text": "Jack：告警~\nBalian：消息内容！"
+            # },
+            "vertical_content_list": [
+                {
+                    "title": "告警统计",
+                    "desc": msg
+                }
+            ],
+            # "horizontal_content_list": [
+            #     {
+            #         "keyname": "告警内容1",
+            #         "value": "提示1"
+            #     },
+            #     {
+            #         "keyname": "告警内容2",
+            #         "value": "提示2",
+            #         "type": 1,
+            #         "url": "https://work.weixin.qq.com/?from=openApi"
+            #     },
+            # ],
+            "jump_list": [
+                {
+                    "type": 1,
+                    "url": "https://grafana.newtsp.newcowin.com",
+                    "title": "grafana地址"
+                }, {
+                    "type": 1,
+                    "url": "https://prometheus.newtsp.newcowin.com",
+                    "title": "prometheus地址"
+                }, {
+                    "type": 1,
+                    "url": full_url,
+                    "title": "告警内容展示地址"
+                }
+
+            ],
+            "card_action": {
+                "type": 1,
+                "url": "https://grafana.newtsp.newcowin.com"
+            }
+        }
+    }
+
+
 @app.route('/webhook', methods=['POST'])
 def webhook():
     try:
@@ -449,69 +540,7 @@ def webhook():
         url = os.path.join('show', "{}".format(int(time.time())))
         full_url = os.path.join(HOST, url)
         write_html_file(filename=filename, content=html_template_content)
-        data = {
-            "msgtype": "template_card",
-            "template_card": {
-                "card_type": "news_notice",
-                "source": {
-                    "icon_url": "https://www.kaiyihome.com/favicon.ico",
-                    "desc": "监控告警",
-                    "desc_color": 0
-                },
-                "main_title": {
-                    "title": "正在使用新TSP监控告警",
-                    "desc": "正在使用新TSP监控告警"
-                },
-                "card_image": {
-                    "url": "https://prometheus.io/assets/prometheus_logo_grey.svg",
-                    "aspect_ratio": 2.25
-                },
-                "quote_area": {
-                    "type": 1,
-                    "url": "https://work.weixin.qq.com/?from=openApi",
-                    "title": "引用文本标题",
-                    "quote_text": "Jack：告警~\nBalian：消息内容！"
-                },
-                "vertical_content_list": [
-                    {
-                        "title": "消息内容",
-                        "desc": "告警！"
-                    }
-                ],
-                "horizontal_content_list": [
-                    {
-                        "keyname": "告警内容1",
-                        "value": "提示1"
-                    },
-                    {
-                        "keyname": "告警内容2",
-                        "value": "提示2",
-                        "type": 1,
-                        "url": "https://work.weixin.qq.com/?from=openApi"
-                    },
-                ],
-                "jump_list": [
-                    {
-                        "type": 1,
-                        "url": "https://grafana.newtsp.newcowin.com",
-                        "title": "grafana地址"
-                    }, {
-                        "type": 1,
-                        "url": "https://prometheus.newtsp.newcowin.com",
-                        "title": "prometheus地址"
-                    }, {
-                        "type": 1,
-                        "url": full_url,
-                        "title": "告警内容展示地址"
-                    }
 
-                ],
-                "card_action": {
-                    "type": 1,
-                    "url": "https://grafana.newtsp.newcowin.com"
-                }
-            }
-        }
         # 获取收件人邮件列表
         # email_list = get_email_conf('email.yaml', email_name=team_name, action=0)
         n.sender(title="新TSP生产环境告警", msg=data)
