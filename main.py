@@ -172,76 +172,6 @@ class NoticeSender:
         _url = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send"
         params = {'key': settings['token'], 'debug': 1}
         headers = {'Content-Type': 'application/json'}
-        # data = {
-        #     "msgtype": "template_card",
-        #     "template_card": {
-        #         "card_type": "news_notice",
-        #         "source": {
-        #             "icon_url": "https://wework.qpic.cn/wwpic/252813_jOfDHtcISzuodLa_1629280209/0",
-        #             "desc": "监控告警",
-        #             "desc_color": 0
-        #         },
-        #         "main_title": {
-        #             "title": "正在使用新TSP监控告警",
-        #             "desc": "正在使用新TSP监控告警"
-        #         },
-        #         "card_image": {
-        #             "url": "https://wework.qpic.cn/wwpic/354393_4zpkKXd7SrGMvfg_1629280616/0",
-        #             "aspect_ratio": 2.25
-        #         },
-        #         "image_text_area": {
-        #             "type": 1,
-        #             "url": "https://work.weixin.qq.com",
-        #             "title": "正在使用新TSP监控告警",
-        #             "desc": "正在使用新TSP监控告警",
-        #             "image_url": "https://wework.qpic.cn/wwpic/354393_4zpkKXd7SrGMvfg_1629280616/0"
-        #         },
-        #         "quote_area": {
-        #             "type": 1,
-        #             "url": "https://work.weixin.qq.com/?from=openApi",
-        #             "title": "引用文本标题",
-        #             "quote_text": "Jack：告警~\nBalian：消息内容！"
-        #         },
-        #         "vertical_content_list": [
-        #             {
-        #                 "title": "消息内容",
-        #                 "desc": "告警！"
-        #             }
-        #         ],
-        #         "horizontal_content_list": [
-        #             {
-        #                 "keyname": "告警内容1",
-        #                 "value": "提示1"
-        #             },
-        #             {
-        #                 "keyname": "告警内容2",
-        #                 "value": "提示2",
-        #                 "type": 1,
-        #                 "url": "https://work.weixin.qq.com/?from=openApi"
-        #             },
-        #         ],
-        #         "jump_list": [
-        #             {
-        #                 "type": 1,
-        #                 "url": "https://grafana.newtsp.newcowin.com",
-        #                 "title": "grafana地址"
-        #             }, {
-        #                 "type": 1,
-        #                 "url": "https://prometheus.newtsp.newcowin.com",
-        #                 "title": "prometheus地址"
-        #             }, {
-        #                 "type": 1,
-        #                 "url": "https://prometheus.newtsp.newcowin.com",
-        #                 "title": "告警内容展示地址"
-        #             }
-        #
-        #         ],
-        #         "card_action": {
-        #             "type": 1,
-        #             "url": "https://grafana.newtsp.newcowin.com"
-        #         }
-        #     }
-        # }
         res = self._req.request(
             url=_url, params=params, data=json.dumps(msg, ensure_ascii=False), headers=headers, method='POST'
         )
@@ -253,7 +183,7 @@ class NoticeSender:
             print("请求成功：{}".format(result['errmsg']))
             return True
 
-    def create_temp(self, message: str):
+    def create_temp(self, message: str, filename):
         import time
 
         if not self._write_path:
@@ -261,10 +191,10 @@ class NoticeSender:
         else:
             if not os.path.exists(self._write_path):
                 os.makedirs(self._write_path)
-        current_files = os.path.join(self._write_path, "{}.txt".format(time.time()))
+        current_files = os.path.join(self._write_path, "{}-{}.txt".format(filename, time.time()))
         try:
-            with open(current_files, 'wb') as fff:
-                fff.write(str(message).encode('ascii') + b"\n")
+            with open(current_files, 'w', encoding='utf-8') as fff:
+                fff.write(message)
             return current_files
         except Exception as error:
             print("创建文件失败:{},{}".format(current_files, error))
@@ -287,7 +217,7 @@ class NoticeSender:
                 print("读取临时文件失败:{}".format(error))
             return res.json()
 
-    def wechat_file_sender(self, msg: str, settings: dict, mentioned=None, is_all=True):
+    def wechat_file_sender(self, msg: str, settings: dict, filename: str, mentioned=None, is_all=True):
         if is_all:
             mentioned = ["@all"]
         elif mentioned and not is_all:
@@ -297,7 +227,7 @@ class NoticeSender:
         _url = 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send'
         params = {'key': settings['token'], 'type': 'file'}
         headers = {'Content-Type': 'application/json'}
-        media_file = self.create_temp(message=msg)
+        media_file = self.create_temp(message=msg, filename=filename)
         if not media_file:
             return False
 
@@ -341,7 +271,7 @@ class NoticeSender:
         for competed in as_completed(thead_list, timeout=10):
             print(competed.result())
 
-    def sender_file(self, msg, mentioned=None, is_all=True):
+    def sender_file(self, msg, filename, mentioned=None, is_all=True):
         """
         :param msg:
         :param mentioned:
@@ -352,9 +282,9 @@ class NoticeSender:
         self._get_sender_config()
         for setting in self._sender_config:
             with ThreadPoolExecutor(max_workers=3) as worker:
-                args = (msg, setting, mentioned, is_all)
+                args = (msg, setting, filename, mentioned, is_all)
                 if setting['msg_type'] == 'WECHAT_ROBOT':
-                    res = worker.submit(self.wechat_file_sender, *args[1:])
+                    res = worker.submit(self.wechat_file_sender, *args)
                 elif setting['msg_type'] == 'DINGTALK_ROBOT':
                     res = worker.submit(self.dingtalk_sender, *args)
                 else:
@@ -533,11 +463,18 @@ def webhook():
 
 
 @app.route('/graylog', methods=['POST'])
-def graylog_alert(message):
+def graylog_alert():
     json_data = request.json
-    # n = NoticeSender()
-    # n.sender_file(msg=message)
     print(json_data)
+    message = json_data['event']['fields']['message']
+    print(message)
+    filename = "{}_{}".format(
+        json_data['event']['fields']['kubernetes_namespace'],
+        json_data['event']['fields']['kubernetes_container_name']
+    )
+    n = NoticeSender()
+    n.sender_file(msg=message, filename=filename)
+    return json_data
 
 
 @app.route("/show/<pages>")
