@@ -213,9 +213,11 @@ class NoticeSender:
                     url="?".join([_upload_media_url, urlencode(params)]) if params else _upload_media_url,
                     files={'file': fff}
                 )
+                print(res)
+                return res.json()
             except Exception as error:
                 print("读取临时文件失败:{}".format(error))
-            return res.json()
+                raise Exception("上传文件失败！")
 
     def wechat_file_sender(self, msg: str, settings: dict, filename: str, mentioned=None, is_all=True):
         if is_all:
@@ -276,6 +278,7 @@ class NoticeSender:
         :param msg:
         :param mentioned:
         :param is_all:
+        :param filename
         :return:
         """
         thead_list = list()
