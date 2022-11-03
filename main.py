@@ -287,7 +287,7 @@ class NoticeSender:
                 print("读取临时文件失败:{}".format(error))
             return res.json()
 
-    def wechat_file_sender(self, msg: str, settings: dict, mentioned=None, is_all=False):
+    def wechat_file_sender(self, msg: str, settings: dict, mentioned=None, is_all=True):
         if is_all:
             mentioned = ["@all"]
         elif mentioned and not is_all:
@@ -341,9 +341,8 @@ class NoticeSender:
         for competed in as_completed(thead_list, timeout=10):
             print(competed.result())
 
-    def sender_file(self, title, msg, mentioned, is_all=False):
+    def sender_file(self, msg, mentioned=None, is_all=True):
         """
-        :param title:
         :param msg:
         :param mentioned:
         :param is_all:
@@ -353,7 +352,7 @@ class NoticeSender:
         self._get_sender_config()
         for setting in self._sender_config:
             with ThreadPoolExecutor(max_workers=3) as worker:
-                args = (msg, setting)
+                args = (msg, setting, mentioned, is_all)
                 if setting['msg_type'] == 'WECHAT_ROBOT':
                     res = worker.submit(self.wechat_file_sender, *args[1:])
                 elif setting['msg_type'] == 'DINGTALK_ROBOT':
@@ -531,6 +530,14 @@ def webhook():
         return prometheus_data
     except Exception as e:
         raise e
+
+
+@app.route('/graylog', methods=['POST'])
+def graylog_alert(message):
+    json_data = request.json
+    # n = NoticeSender()
+    # n.sender_file(msg=message)
+    print(json_data)
 
 
 @app.route("/show/<pages>")
