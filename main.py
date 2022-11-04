@@ -213,7 +213,8 @@ class NoticeSender:
                     url="?".join([_upload_media_url, urlencode(params)]) if params else _upload_media_url,
                     files={'file': fff}
                 )
-                print(res)
+                print(res.json())
+                os.remove(media_file)
                 return res.json()
             except Exception as error:
                 print("读取临时文件失败:{}".format(error))
