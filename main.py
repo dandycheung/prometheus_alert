@@ -214,9 +214,12 @@ class NoticeSender:
                     files={'file': fff}
                 )
                 print(res.json())
+                if res.status_code != 200 or res.json()['errcode']:
+                    raise Exception(res.json()['errmsg'])
                 os.remove(media_file)
                 return res.json()
             except Exception as error:
+                os.remove(media_file)
                 print("读取临时文件失败:{}".format(error))
                 raise Exception("上传文件失败！")
 
