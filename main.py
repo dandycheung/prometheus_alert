@@ -1,4 +1,4 @@
-import os, json, datetime, yaml, time
+import os, json, datetime, yaml, time, copy
 # from lib.Log import logger
 from flask import Flask, request, render_template
 from gevent.pywsgi import WSGIServer
@@ -9,13 +9,16 @@ from http import HTTPStatus
 from urllib.request import Request, urlopen
 from urllib.parse import urlencode, quote_plus
 from urllib.error import HTTPError
-from settings import NOTICE_SETTINGS, HOST
+from settings import *
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 try:
     import ssl
 except ImportError:
     ssl = None
+
+append_times = copy.deepcopy(MAX_REQUEST)
+append_message = str()
 
 
 def time_zone_conversion(utctime):
@@ -471,16 +474,45 @@ def webhook():
 
 @app.route('/graylog', methods=['POST'])
 def graylog_alert():
-    json_data = request.json
-    print(json_data)
-    message = json_data['event']['fields']['message']
-    print(message)
-    filename = "{}_{}".format(
-        json_data['event']['fields']['kubernetes_namespace'],
-        json_data['event']['fields']['kubernetes_container_name']
-    )
     n = NoticeSender()
-    n.sender_file(msg=message, filename=filename)
+    global append_message, append_times
+    json_data = request.json
+    filename = "graylog_alert_{}".format(str(time.time()))
+    if append_times > 0:
+        append_message = "\n%s %s %s %s\n%s\n%s %s %s %s\n%s" % (
+            10 * "+",
+            json_data['event']['fields']['kubernetes_namespace'],
+            json_data['event']['fields']['kubernetes_container_name'],
+            10 * "+",
+            json_data['event']['fields']['message'],
+            10 * "-",
+            json_data['event']['fields']['kubernetes_namespace'],
+            json_data['event']['fields']['kubernetes_container_name'],
+            10 * "-",
+            append_message
+        )
+        append_times -= 1
+        print("x" * 10)
+        print(append_message)
+        print("y" * 10)
+    elif append_times == 0:
+        print("*" * 10)
+        print(append_message)
+        print("-" * 10)
+        n.sender_file(msg=append_message, filename=filename)
+        append_times = copy.deepcopy(MAX_REQUEST)
+        append_message = str()
+    else:
+        raise ValueError("Attempted to append_times")
+
+    # message = json_data['event']['fields']['message']
+    # print(message)
+    # filename = "{}_{}".format(
+    #     json_data['event']['fields']['kubernetes_namespace'],
+    #     json_data['event']['fields']['kubernetes_container_name']
+    # )
+    # n = NoticeSender()
+    # n.sender_file(msg=message, filename=filename)
     return json_data
 
 
