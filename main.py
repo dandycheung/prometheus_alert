@@ -503,6 +503,7 @@ def graylog_alert():
             append_message
         )
         append_times -= 1
+        print("当前消息容量为：%d" % append_times)
     elif append_times == 0:
         print("消息容量已满，即将发送")
         try:
