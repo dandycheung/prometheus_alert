@@ -477,42 +477,36 @@ def graylog_alert():
     n = NoticeSender()
     global append_message, append_times
     json_data = request.json
+    if "kubernetes_namespace" in json_data['event']['fields'].keys():
+        namespace = json_data['event']['fields']['kubernetes_namespace']
+    elif "filebeat_kubernetes_namespace" in json_data['event']['fields'].keys():
+        namespace = json_data['event']['fields']['filebeat_kubernetes_namespace']
+    else:
+        namespace = "未知"
+    if "kubernetes_container_name" in json_data['event']['fields'].keys():
+        service_name = json_data['event']['fields']['kubernetes_container_name']
+    elif "filebeat_kubernetes_container_name" in json_data['event']['fields'].keys():
+        service_name = json_data['event']['fields']['filebeat_kubernetes_container_name']
+    else:
+        service_name = "未知"
+    message = json_data['event']['fields']['message']
+
     filename = "graylog_alert_{}".format(str(time.time()))
     if append_times > 0:
         append_message = "\n%s %s %s %s\n%s\n%s %s %s %s\n%s" % (
-            10 * "+",
-            json_data['event']['fields']['kubernetes_namespace'],
-            json_data['event']['fields']['kubernetes_container_name'],
-            10 * "+",
-            json_data['event']['fields']['message'],
-            10 * "-",
-            json_data['event']['fields']['kubernetes_namespace'],
-            json_data['event']['fields']['kubernetes_container_name'],
-            10 * "-",
+            20 * "+", namespace, service_name, 20 * "+",
+            message,
+            20 * "-", namespace, service_name, 20 * "-",
             append_message
         )
         append_times -= 1
-        print("x" * 10)
-        print(append_message)
-        print("y" * 10)
     elif append_times == 0:
-        print("*" * 10)
-        print(append_message)
-        print("-" * 10)
+        print("消息容量已满，即将发送")
         n.sender_file(msg=append_message, filename=filename)
         append_times = copy.deepcopy(MAX_REQUEST)
         append_message = str()
     else:
         raise ValueError("Attempted to append_times")
-
-    # message = json_data['event']['fields']['message']
-    # print(message)
-    # filename = "{}_{}".format(
-    #     json_data['event']['fields']['kubernetes_namespace'],
-    #     json_data['event']['fields']['kubernetes_container_name']
-    # )
-    # n = NoticeSender()
-    # n.sender_file(msg=message, filename=filename)
     return json_data
 
 
