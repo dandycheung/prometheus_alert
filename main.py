@@ -489,7 +489,10 @@ def graylog_alert():
         service_name = json_data['event']['fields']['filebeat_kubernetes_container_name']
     else:
         service_name = "未知"
-    message = json_data['event']['fields']['message']
+    if "message" in json_data['event']['fields'].keys():
+        message = json_data['event']['fields']['message']
+    else:
+        message = "未知"
 
     filename = "graylog_alert_{}".format(str(time.time()))
     if append_times > 0:
