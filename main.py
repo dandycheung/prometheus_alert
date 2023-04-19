@@ -507,8 +507,8 @@ def graylog_alert():
     elif append_times == 0:
         print("消息容量已满，即将发送:%d" % append_times)
         try:
-            n.sender_file(msg=append_message, filename=filename)
             append_times = copy.deepcopy(MAX_REQUEST)
+            n.sender_file(msg=append_message, filename=filename)
             append_message = str()
             return json_data
         except Exception as e:
