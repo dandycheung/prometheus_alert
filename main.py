@@ -533,4 +533,5 @@ def direct_show(pages):
 
 
 if __name__ == '__main__':
+    print("Server started: 0.0.0.0:5000")
     WSGIServer(('0.0.0.0', 5000), app).serve_forever()
