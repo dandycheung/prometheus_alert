@@ -520,6 +520,55 @@ def graylog_alert():
     return json_data
 
 
+@app.route('/graylog_time', methods=['POST'])
+def graylog_alert():
+    n = NoticeSender()
+    json_data = request.json
+    if "kubernetes_namespace" in json_data['event']['fields'].keys():
+        namespace = json_data['event']['fields']['kubernetes_namespace']
+    elif "filebeat_kubernetes_namespace" in json_data['event']['fields'].keys():
+        namespace = json_data['event']['fields']['filebeat_kubernetes_namespace']
+    else:
+        namespace = "未知"
+    if "kubernetes_container_name" in json_data['event']['fields'].keys():
+        service_name = json_data['event']['fields']['kubernetes_container_name']
+    elif "filebeat_kubernetes_container_name" in json_data['event']['fields'].keys():
+        service_name = json_data['event']['fields']['filebeat_kubernetes_container_name']
+    else:
+        service_name = "未知"
+    if "message" in json_data['event']['fields'].keys():
+        message = json_data['event']['fields']['message']
+    else:
+        message = "未知"
+
+    # filename = "graylog_alert_{}".format(str(time.time()))
+    filename = "{}_{}".format(namespace, service_name)
+    n.sender_file(msg=message, filename=filename)
+    # if append_times > 0:
+    #     append_message = "\n%s %s %s %s\n%s\n%s %s %s %s\n%s" % (
+    #         20 * "+", namespace, service_name, 20 * "+",
+    #         message,
+    #         20 * "-", namespace, service_name, 20 * "-",
+    #         append_message
+    #     )
+    #     append_times -= 1
+    #     print("当前消息容量为：%d" % append_times)
+    #     return json_data
+    # elif append_times == 0:
+    #     print("消息容量已满，即将发送:%d" % append_times)
+    #     try:
+    #         append_times = copy.deepcopy(MAX_REQUEST)
+    #         n.sender_file(msg=append_message, filename=filename)
+    #         append_message = str()
+    #         return json_data
+    #     except Exception as e:
+    #         return "上传和发送异常：{}".format(e)
+    #
+    # else:
+    #     raise ValueError("Attempted to append_times")
+    return json_data
+
+
 @app.route("/show/<pages>")
 def direct_show(pages):
     pages_params = pages.split('.')
