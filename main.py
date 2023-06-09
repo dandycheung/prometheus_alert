@@ -252,7 +252,8 @@ class NoticeSender:
             url=_url, method='POST', headers=headers,
             params=params, data=json.dumps(data)
         )
-        os.remove(media_file)
+        if os.path.exists(media_file):
+            os.remove(media_file)
         return res
 
     def dingtalk_file_sender(self):
