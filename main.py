@@ -521,7 +521,7 @@ def graylog_alert():
 
 
 @app.route('/graylog_time', methods=['POST'])
-def graylog_alert():
+def graylog_alert_time():
     n = NoticeSender()
     json_data = request.json
     if "kubernetes_namespace" in json_data['event']['fields'].keys():
