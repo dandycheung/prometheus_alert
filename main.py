@@ -194,7 +194,7 @@ class NoticeSender:
         else:
             if not os.path.exists(self._write_path):
                 os.makedirs(self._write_path)
-        current_files = os.path.join(self._write_path, "{}-{}.txt".format(filename, time.time()))
+        current_files = os.path.join(self._write_path, "{}-{}.txt".format(filename, int(time.time())))
         try:
             with open(current_files, 'w', encoding='utf-8') as fff:
                 fff.write(message)
