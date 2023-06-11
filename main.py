@@ -545,7 +545,10 @@ def graylog_alert_time():
 
     # filename = "graylog_alert_{}".format(str(time.time()))
     filename = "{}_{}".format(namespace, service_name)
-    n.sender_file(msg=message, filename=filename)
+    try:
+        n.sender_file(msg=message, filename=filename)
+    except Exception as e:
+        print(e)
     return json_data
 
 
