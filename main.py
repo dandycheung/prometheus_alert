@@ -538,7 +538,7 @@ def graylog_alert_time():
         service_name = json_data['event']['fields']['filebeat_kubernetes_container_name']
     else:
         service_name = "未知"
-    if "backlog" in json_data['event'].keys():
+    if json_data['backlog']:
         # if json_data['event']['backlog']:
         message = ""
         for x in json_data['event']['backlog']:
