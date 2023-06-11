@@ -541,7 +541,7 @@ def graylog_alert_time():
     if json_data['backlog']:
         # if json_data['event']['backlog']:
         message = ""
-        for x in json_data['event']['backlog']:
+        for x in json_data['backlog']:
             message += "\n%s".format(x['message'])
     else:
         if "message" in json_data['event']['fields'].keys():
