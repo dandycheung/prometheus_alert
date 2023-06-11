@@ -538,12 +538,16 @@ def graylog_alert_time():
         service_name = json_data['event']['fields']['filebeat_kubernetes_container_name']
     else:
         service_name = "未知"
-    if "message" in json_data['event']['fields'].keys():
-        message = json_data['event']['fields']['message']
+    if json_data['event']['backlog']:
+        message = ""
+        for x in json_data['event']['backlog']:
+            message += "\n%s".format(x['message'])
     else:
-        message = "未知"
+        if "message" in json_data['event']['fields'].keys():
+            message = json_data['event']['fields']['message']
+        else:
+            message = "未知"
 
-    # filename = "graylog_alert_{}".format(str(time.time()))
     filename = "{}_{}".format(namespace, service_name)
     try:
         n.sender_file(msg=message, filename=filename)
